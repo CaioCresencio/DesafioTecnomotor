@@ -16,15 +16,17 @@ import com.tecnomotor.desafio.model.Montadora;
 import com.tecnomotor.desafio.service.HTTPServiceMontadora;
 import com.tecnomotor.desafio.service.HTTPServiceTipo;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener{
     private TextView textView;
-    private List<Montadora> mmontadoras;
+    private ArrayList<Montadora> montadoras;
     private List<String> tipos;
     private Spinner spinner;
+    private String tipoSelected = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
             @Override
             public void onClick(View view) {
                 Intent tela = new Intent(MainActivity.this, MontadoraActivity.class);
+                tela.putExtra("montadoras", getMontadoras("LEVES"));
                 startActivity(tela);
             }
         });
@@ -46,7 +49,6 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
 
     public void getTipos(){
         HTTPServiceTipo serviceTipo = new HTTPServiceTipo();
-        HTTPServiceMontadora serviceMontadora;
         try {
             tipos = serviceTipo.execute().get();
         } catch (ExecutionException e) {
@@ -55,14 +57,12 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
             e.printStackTrace();
         }
     }
-    public List<Montadora> getMontadoras(String tipo){
-        HTTPServiceTipo serviceTipo = new HTTPServiceTipo();
+    public ArrayList<Montadora> getMontadoras(String tipo){
         HTTPServiceMontadora serviceMontadora;
-        List<Montadora> lista = new ArrayList<>();
+        ArrayList<Montadora> lista = new ArrayList<>();
         try {
             serviceMontadora = new HTTPServiceMontadora(tipo);
             lista = serviceMontadora.execute().get();
-            textView.setText(mmontadoras.get(0).getNome());
 
         } catch (ExecutionException e) {
             e.printStackTrace();
@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
         Toast.makeText(getApplicationContext(),tipos.get(i), Toast.LENGTH_LONG).show();
+        this.tipoSelected = tipos.get(i);
     }
 
     @Override

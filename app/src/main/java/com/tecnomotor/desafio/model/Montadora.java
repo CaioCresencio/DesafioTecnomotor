@@ -1,6 +1,8 @@
 package com.tecnomotor.desafio.model;
 
-public class Montadora {
+import java.io.Serializable;
+
+public class Montadora implements Serializable {
 
     private int id;
     private String nome;
