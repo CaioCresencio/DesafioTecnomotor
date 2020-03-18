@@ -14,12 +14,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tecnomotor.desafio.model.Montadora;
+import com.tecnomotor.desafio.service.HTTPServiceMontadoraInfo;
 import com.tecnomotor.desafio.service.HTTPServiceMontadora;
 import com.tecnomotor.desafio.service.HTTPServiceTipo;
 
-import org.json.JSONObject;
-
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -39,6 +37,15 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         spinner = findViewById(R.id.spinner);
         textView = findViewById(R.id.textView);
 
+        HTTPServiceMontadoraInfo httpServiceMontadoraInfo = new HTTPServiceMontadoraInfo("LEVES",29);
+        try {
+            System.out.println("AQUIIIIII"+httpServiceMontadoraInfo.execute().get().get(0).getVeiculo().getNome());
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         addItemsOnSpinner();
         Button btn = (Button) findViewById(R.id.btn_tipo);
         btn.setOnClickListener(new View.OnClickListener() {

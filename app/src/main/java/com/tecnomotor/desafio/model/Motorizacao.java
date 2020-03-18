@@ -1,19 +1,15 @@
 package com.tecnomotor.desafio.model;
 
-import java.io.Serializable;
-
-public class Montadora implements Serializable {
+public class Motorizacao {
 
     private int id;
-
     private String nome;
 
-    private String tipo;
+    public Motorizacao(){}
 
-    public Montadora(int id, String nome, String tipo){
+    public Motorizacao(int id, String nome){
         this.setId(id);
         this.setNome(nome);
-        this.setTipo(tipo);
     }
 
     public int getId() {
@@ -30,13 +26,5 @@ public class Montadora implements Serializable {
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public String getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
     }
 }
