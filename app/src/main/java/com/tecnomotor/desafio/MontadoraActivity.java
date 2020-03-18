@@ -2,6 +2,8 @@ package com.tecnomotor.desafio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -21,7 +23,7 @@ public class MontadoraActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_montadora);
-        ArrayList<Montadora> montadoras = (ArrayList<Montadora>) getIntent().getSerializableExtra("montadoras");
+        final ArrayList<Montadora> montadoras = (ArrayList<Montadora>) getIntent().getSerializableExtra("montadoras");
 
         ListView listview = (ListView) findViewById(R.id.listview);
 
@@ -36,6 +38,11 @@ public class MontadoraActivity extends AppCompatActivity {
                                     int position, long id) {
                 Toast.makeText(getApplicationContext(),
                         "Clicou no item " + position, Toast.LENGTH_LONG).show();
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("montadora_result",montadoras.get(position));
+                setResult(Activity.RESULT_OK, returnIntent);
+                finish();
+
             }
         });
       

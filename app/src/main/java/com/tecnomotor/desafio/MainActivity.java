@@ -2,6 +2,7 @@ package com.tecnomotor.desafio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +17,8 @@ import com.tecnomotor.desafio.model.Montadora;
 import com.tecnomotor.desafio.service.HTTPServiceMontadora;
 import com.tecnomotor.desafio.service.HTTPServiceTipo;
 
+import org.json.JSONObject;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     private List<String> tipos;
     private Spinner spinner;
     private String tipoSelected = "";
+    private int CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +46,24 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
             public void onClick(View view) {
                 Intent tela = new Intent(MainActivity.this, MontadoraActivity.class);
                 tela.putExtra("montadoras", getMontadoras("LEVES"));
-                startActivity(tela);
+                startActivityForResult(tela,CODE);
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CODE) {
+            if(resultCode == Activity.RESULT_OK){
+                Montadora montadora_result = (Montadora) data.getSerializableExtra("montadora_result");
+                System.out.println(montadora_result.getNome());
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
     }
 
     public void getTipos(){
