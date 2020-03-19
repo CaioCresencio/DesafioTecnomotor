@@ -20,7 +20,6 @@ import com.tecnomotor.desafio.model.MontadoraInfo;
 import com.tecnomotor.desafio.service.HTTPServiceMontadoraInfo;
 import com.tecnomotor.desafio.service.HTTPServiceMontadora;
 import com.tecnomotor.desafio.service.HTTPServiceTipo;
-import com.tecnomotor.desafio.util.AdapterMontadora;
 import com.tecnomotor.desafio.util.AdapterMontadoraInfo;
 
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         spinner = findViewById(R.id.spinner);
-        textView = findViewById(R.id.textView);
+        textView = findViewById(R.id.textView_titulo);
         listviewInfoHome = (ListView) findViewById(R.id.listview_info);
 
         SharedPreferences pref = getApplicationContext().getSharedPreferences("PREF", 0);
