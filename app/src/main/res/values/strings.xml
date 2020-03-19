@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Desafio</string>
+    <string name="titulo_veiculo">Veiculo</string>
+    <string name="titulo_motorizacao">Motorização</string>
 </resources>

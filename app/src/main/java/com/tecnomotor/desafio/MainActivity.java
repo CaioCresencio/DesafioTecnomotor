@@ -9,14 +9,18 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.tecnomotor.desafio.model.Montadora;
+import com.tecnomotor.desafio.model.MontadoraInfo;
 import com.tecnomotor.desafio.service.HTTPServiceMontadoraInfo;
 import com.tecnomotor.desafio.service.HTTPServiceMontadora;
 import com.tecnomotor.desafio.service.HTTPServiceTipo;
+import com.tecnomotor.desafio.util.AdapterMontadora;
+import com.tecnomotor.desafio.util.AdapterMontadoraInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +29,12 @@ import java.util.concurrent.ExecutionException;
 public class MainActivity extends AppCompatActivity  implements AdapterView.OnItemSelectedListener{
     private TextView textView;
     private ArrayList<Montadora> montadoras;
+    private List<MontadoraInfo> montadoraInfoList;
     private List<String> tipos;
     private Spinner spinner;
-    private String tipoSelected = "";
+    private String tipoSelected = "LEVES";
+    ListView listviewInfoHome;
+
     private int CODE = 1;
 
     @Override
@@ -36,23 +43,22 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         setContentView(R.layout.activity_main);
         spinner = findViewById(R.id.spinner);
         textView = findViewById(R.id.textView);
+        listviewInfoHome = (ListView) findViewById(R.id.listview_info);
 
-        HTTPServiceMontadoraInfo httpServiceMontadoraInfo = new HTTPServiceMontadoraInfo("LEVES",29);
-        try {
-            System.out.println("AQUIIIIII"+httpServiceMontadoraInfo.execute().get().get(0).getVeiculo().getNome());
-
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if(montadoraInfoList != null) {
+            AdapterMontadoraInfo adapterMontadoraInfo = new AdapterMontadoraInfo(montadoraInfoList, this);
+            listviewInfoHome.setAdapter(adapterMontadoraInfo);
         }
+
+
         addItemsOnSpinner();
         Button btn = (Button) findViewById(R.id.btn_tipo);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent tela = new Intent(MainActivity.this, MontadoraActivity.class);
-                tela.putExtra("montadoras", getMontadoras("LEVES"));
+                tela.putExtra("montadoras", getMontadoras(tipoSelected));
+
                 startActivityForResult(tela,CODE);
             }
         });
@@ -65,14 +71,28 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         if (requestCode == CODE) {
             if(resultCode == Activity.RESULT_OK){
                 Montadora montadora_result = (Montadora) data.getSerializableExtra("montadora_result");
-                System.out.println(montadora_result.getNome());
+                getMontadoraInfoList(montadora_result);
+                AdapterMontadoraInfo adapterMontadoraInfo = new AdapterMontadoraInfo(montadoraInfoList, this);
+                listviewInfoHome.setAdapter(adapterMontadoraInfo);
+
             }
             if (resultCode == Activity.RESULT_CANCELED) {
-                //Write your code if there's no result
+
             }
         }
     }
+    public void getMontadoraInfoList(Montadora montadora){
+        HTTPServiceMontadoraInfo httpServiceMontadoraInfo = new HTTPServiceMontadoraInfo(montadora.getTipo(),montadora.getId());
+        try {
+            this.montadoraInfoList = httpServiceMontadoraInfo.execute().get();
 
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
     public void getTipos(){
         HTTPServiceTipo serviceTipo = new HTTPServiceTipo();
         try {

@@ -36,8 +36,8 @@ public class MontadoraActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     int position, long id) {
-                Toast.makeText(getApplicationContext(),
-                        "Clicou no item " + position, Toast.LENGTH_LONG).show();
+//                Toast.makeText(getApplicationContext(),
+//                        "Clicou no item " + position, Toast.LENGTH_LONG).show();
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("montadora_result",montadoras.get(position));
                 setResult(Activity.RESULT_OK, returnIntent);
