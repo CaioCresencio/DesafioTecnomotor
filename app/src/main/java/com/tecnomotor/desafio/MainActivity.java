@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -33,7 +34,7 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
     private List<String> tipos;
     private Spinner spinner;
     private String tipoSelected = "LEVES";
-    ListView listviewInfoHome;
+    private ListView listviewInfoHome;
 
     private int CODE = 1;
 
@@ -45,7 +46,10 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         textView = findViewById(R.id.textView);
         listviewInfoHome = (ListView) findViewById(R.id.listview_info);
 
-        if(montadoraInfoList != null) {
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("PREF", 0);
+
+        if(pref.getString("TIPO",null) != null) {
+            getMontadoraInfoList(pref.getString("TIPO",null),pref.getInt("ID",-1));
             AdapterMontadoraInfo adapterMontadoraInfo = new AdapterMontadoraInfo(montadoraInfoList, this);
             listviewInfoHome.setAdapter(adapterMontadoraInfo);
         }
@@ -71,18 +75,24 @@ public class MainActivity extends AppCompatActivity  implements AdapterView.OnIt
         if (requestCode == CODE) {
             if(resultCode == Activity.RESULT_OK){
                 Montadora montadora_result = (Montadora) data.getSerializableExtra("montadora_result");
-                getMontadoraInfoList(montadora_result);
+                getMontadoraInfoList(montadora_result.getTipo(),montadora_result.getId());
                 AdapterMontadoraInfo adapterMontadoraInfo = new AdapterMontadoraInfo(montadoraInfoList, this);
                 listviewInfoHome.setAdapter(adapterMontadoraInfo);
 
+                SharedPreferences pref = getApplicationContext().getSharedPreferences("PREF", 0);
+                SharedPreferences.Editor editor = pref.edit();
+                editor.putInt("ID", montadora_result.getId());
+                editor.putString("TIPO",montadora_result.getTipo() );
+
+                editor.commit();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
 
             }
         }
     }
-    public void getMontadoraInfoList(Montadora montadora){
-        HTTPServiceMontadoraInfo httpServiceMontadoraInfo = new HTTPServiceMontadoraInfo(montadora.getTipo(),montadora.getId());
+    public void getMontadoraInfoList(String tipo, int id){
+        HTTPServiceMontadoraInfo httpServiceMontadoraInfo = new HTTPServiceMontadoraInfo(tipo,id);
         try {
             this.montadoraInfoList = httpServiceMontadoraInfo.execute().get();
 
